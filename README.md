@@ -5,13 +5,13 @@ Welcome to my STAT545 private repository. This repository will primarily contain
 
 These are the links to the privious weeks participation for the STAT545A class and the `R markdown` file for the homework 002.
 
-[hw002.md][hw002.md] \| [hw002.rmd][hw002.rmd]
+[hw003.md][hw003.md] \| [hw003.rmd][hw003.rmd]
 
 
 [Stat545Link]: http://stat545.com/Classroom/ "STAT 545A: Exploratory Data Analysis"
 [STAT545A_participation]: https://github.com/zeeva85/STAT545A_participation
-[hw002.md]: https://github.com/STAT545-UBC-students/hw02-zeeva85/blob/master/hw02_gapminder.md
-[hw002.rmd]: https://github.com/STAT545-UBC-students/hw02-zeeva85/blob/master/hw02_gapminder.Rmd
+[hw003.md]: https://github.com/STAT545-UBC-students/hw02-zeeva85/blob/master/hw02_gapminder.md
+[hw003.rmd]: https://github.com/STAT545-UBC-students/hw02-zeeva85/blob/master/hw02_gapminder.Rmd
 
 
 
