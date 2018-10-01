@@ -7,79 +7,294 @@ fig_caption: yes
 keep_md: TRUE
 ---
 
-Homework 03: Use dplyr/ggplot2 to manipulate and explore data
-Overview
-Due Tuesday 2018-10-02 at 23:59.
+Packages required
+-----------------
 
-The goal is to manipulate and explore a dataset with the dplyr package, complemented by visualizations made with ggplot2. You can think of this as a deeper version of Homework 02.
+-   [tidyverse](http://tidyverse.tidyverse.org/) (includes [ggplot2](http://ggplot2.tidyverse.org/), [dplyr](http://dplyr.tidyverse.org/), [tidyr](http://tidyr.tidyverse.org/), [readr](http://readr.tidyverse.org/), [purrr](http://purrr.tidyverse.org/), [tibble](http://tibble.tidyverse.org/))
+    -   Install by running 'install.packages("tidyverse", dependencies = TRUE)'
 
-Your homework should serve as your own personal cheat sheet in the future for ways to manipulate a dataset and produce companion figures. Give yourself the cheatsheet you deserve! Check out the sampler concept for inspiration.
+Functions used
+--------------
 
-Evaluation
-All rubrics listed on the assignments page are relevant for this assignment.
+-   **%&gt;%** - Syntactic sugar for easily piping the result of one function into another.
+-   **ggplot2::ggplot()** - Base function for using ggplot2. Lays out the invisible 'canvas' for graphing.
+-   **ggplot2::geom\_point()** - Geom function for drawing data points in scatterplots.
+-   **ggplot2::geom\_smooth()** - Geom function for drawing fitted lines in trend charts.
+-   **ggplot2::geom\_bar()** - Geom function for drawing bars in bar graphs.
+-   **ggplot2::geom\_density()** - Geom function for drawing density plots.
+-   **ggplot2::geom\_boxplot()** - Geom function for drawing box plots.
+-   **ggplot2::geom\_violin()** - Geom function for violin plots.
+-   **ggplot2::facet\_wrap()** - ggplot2 function for separating factor levels into multiple graphs.
+-   **ggplot2::xlab()** - Manually set x-axis label.
+-   **ggplot2::ylab()** - Manually set y-axis label.
+-   **ggplot2::scale\_y\_reverse()** - Reverse y-axis.
+-   **ggplot2::coord\_flip()** - Flip x and y axes.
+-   **ggplot2::coord\_polar()** - Use polar axes.
+-   **dplyr::group\_by()** - Commonly used with summarize() to derive summarized values for multiple rows sharing certain attribues, e.g. Average fuel consumption rates of different car manufacturer.
+-   **dplyr::summarize()** - Commonly used with summarize() to derive summarized values for multiple rows sharing certain attribues.
+-   **reshape::melt()** - Changes a rectangular data into the long format.
+-   **knitr::kable()** - Changes a rectangular data into the long format.
 
-For this assignment, you can think of the scores loosely this way:
 
-0: Did not attempt.
 
-1: Didn’t tackle at least 3 tasks. Or didn’t make companion graphs. Didn’t interpret anything but left it all to the “reader”. Or more than one technical problem that is relatively easy to fix. It’s hard to find the report in this crazy repo.
+## Initial Package Setup
+```{r loadChunk, echo=TRUE, message=FALSE}
+library(tidyverse)
+library(gapminder)
+library(reshape2)
+library(knitr)
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(gghighlight))
+suppressPackageStartupMessages(library(gridExtra))
 
-2: Hits all the elements. No obvious mistakes. Pleasant to read. No heroic detective work required. Solid.
-
-3: Exceeded the requirements in number of tasks. Or developed novel tasks that were indeed interesting and “worked”. Impressive use of dplyr and/or ggplot2. Impeccable organization of repo and report. You learned something new from reviewing their work and you’re eager to incorporate it into your work.
-
-Bring rectangular data in
-Work with the gapminder data we explored in class. If you really want to, you can explore a different dataset. Self-assess the suitability of your dataset by reading this issue, and if you still aren’t sure if it’s suitable, send Vincenzo an email.
-
-The Gapminder data is distributed as an R package from CRAN.
-
-The Assignment
-Your mission, high-level
-Pick at least three of the tasks below (in the “Task menu” section) and attack each with a table and figure. For each table, make sure to include a relevant figure! Note that:
-
-dplyr should be your data manipulation tool
-ggplot2 should be your visualization tool
-Make observations about what your tables/figures show and about the process.
-
-Also useful for you to add to your “cheat sheet” are notes on difficulties/oddities. For example, which figures are easy/hard to make, which data formats make better inputs for plotting functions vs. for human-friendly tables.
-
-If relevant, give credit to your sources, whether it’s a blog post, a fellow student, an online tutorial, etc. This is also valuable “cheat sheet” info for future-you.
-
-Don’t worry about…
-Relax about the following things:
-
-Tidying/reshaping is NOT your assignment. Many of your tables will be awkwardly shaped in the report. That’s OK.
-Table beauty is not a big deal. Simply printing to “screen” is fine. You could also try the knitr::kable() function. Assuming my_df is a data.frame, here’s an R chunk that should print it as a decent-looking table:
-```{r results = 'asis'}
-knitr::kable(my_df)
 ```
-For all things, graphical and tabular, if you’re dissatisfied with a result, discuss the problem, what you’ve tried and move on.
-Your figure does not have to depict every single number from the data aggregation result. Use your judgement. It just needs to complement the table, add context, and allow for some sanity checking both ways.
-Task menu
-Here are some sample tasks for you to populate your cheat sheet with. If you want to do something comparable but different, i.e. swap one quantitative variable for another, be my guest! If you are feeling inspired and curious, then we’re doing this right. Go for it.
 
-Get the maximum and minimum of GDP per capita for all continents.
+## Exploration Tasks
 
-Look at the spread of GDP per capita within the continents.
+### (1) Get the maximum and minimum of GDP per capita for all continents
 
-Compute a trimmed mean of life expectancy for different years. Or a weighted mean, weighting by population. Just try something other than the plain vanilla mean.
 
-How is life expectancy changing over time on different continents?
+```{r gdpChunk, message=FALSE}
 
-Report the absolute and/or relative abundance of countries with low life expectancy over time by continent: Compute some measure of worldwide life expectancy – you decide – a mean or median or some other quantile or perhaps your current age. Then determine how many countries on each continent have a life expectancy less than this benchmark, for each year.
+# Make a copy of the gapminder dataset
+gpmd <- gapminder
 
-Find countries with interesting stories. Open-ended and, therefore, hard. Promising but unsuccessful attempts are encouraged. This will generate interesting questions to follow up on in class.
 
-Or, make up your own! Between the dplyr coverage in class and the list above, I think you get the idea.
+maxMinGdp <- gpmd %>%
+  group_by(continent) %>% # group data by continent
+  summarize(minGdp = min(gdpPercap), maxGdp = max(gdpPercap)) %>% # calculate min/max continent
+  melt() # changes the rectangular data into long table
 
-But I want to do more!
-If you’re particularly keen on levelling up the challenge of this assignment, try these things:
+kable(maxMinGdp)
+```
 
-Layout stretch goal: get table and figure side-by-side. This gist might get you started.
-Table stretch goal: there are some really nice fancy table helper packages. This tweet from @polesasunder will point you toward some R packages you may want to check out (pander, xtable, stargazer).
-Finishing up, and Reflection
-Once you’re done the above, go back to UBC canvas, and find the “Homework 03” page.
 
-You’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. As usual, put this reflection on your canvas submission.
+#### Ploting GDP per Capita Min / Max from 1952 - 2007
 
-Please add a link to your homework respository to help out our wonderful TA’s.
+```{r continentGdpMinMaxPlot}
+# Plot GDP per Capita Min / Max from 1952 - 2007
+
+continentGdpMinMaxPlot <- maxMinGdp %>% # assign results to "continentGdpMinMaxPlot""
+  ggplot(aes(fill = variable, y = value, x = maxMinGdp$continent)) +
+  geom_bar(position = "dodge", stat = "identity") + # plot "dodge", plots them side by side
+  scale_y_log10() + # Y Axis on log10 scale 
+  labs(fill = "GDP per capita") + # legend title "GDP per capita"
+  theme(aspect.ratio = 1, axis.text.x = element_text(angle = 90, hjust = 1), # sets continents 90 degrees angle on X Axis
+        plot.title = element_text(hjust = 0.5)) + # Center title, default is left aligned
+  ggtitle("Continent GDP per Capita from 1952 - 2007") + # title of plot
+  ylab("GDP per Capita") + # Y axis label
+  xlab("Continent") # X Axis label
+
+print(continentGdpMinMaxPlot)
+  
+```
+
+Asia has the widest range of GDP per capita values, followed by Africa. Oceania has the smallest differences in GDP per capita in all those years. We will try to explain some of the results in the next few sections.
+
+#### How many countries are in each continent 
+
+```{r}
+countrycount <- table(select(gpmd, continent)) / 
+  (nrow(gpmd) / n_distinct(gpmd$country))
+  
+
+print(countrycount)
+```
+
+#### Plotting GDP per capita for each continent from 1952 - 2007
+
+```{r continentGdpMinMaxPlotwithTable}
+
+  gdpPerCapbyYear = gpmd %>%
+  group_by(continent, year) %>%
+  summarize(meanGdp = mean(gdpPercap))
+
+p1 <- gdpPerCapbyYear%>%
+  ggplot(aes(year, meanGdp, shape = continent, color = continent)) +
+  geom_point() + 
+  geom_line() + 
+  theme(aspect.ratio = 1, axis.text.x = element_text(angle = 90, hjust = 1), # sets continents 90 degrees angle on X Axis
+        plot.title = element_text(hjust = 0.5))
+  
+
+grid.arrange(p1, continentGdpMinMaxPlot, ncol = 2,
+  top = "Mean GDP Per Capita through years",
+  widths = c(0.7, 0.7),
+  clip = FALSE
+)
+```
+
+It can be seen here that Africa `r countrycount[1]` has the highest number of country representation in the dataset followed by Asia `r countrycount[3]` and Oceania has `r countrycount[5]`, the least number of representative. This partially explains why there is the least differences between Oceania and the high differences between Asian and African continent. Althogh Africa has the most representative countries, Asia had the biggest difference between GDP percapita in the dataset because it can be seen that Asia has a steady increase of mean GDP per capita over the years compared to Africa, which has a very slow non-linear growth to the GDP per capita.
+
+To get a intuitive sense of the maximum and minimum gdpPercap for different continents, I utilize the violin plot along with the jitter plot, where I also add a horizontal line to indicate the maximum values. 
+```{r}
+summ = 
+  gapminder%>%
+  group_by(continent) %>%
+  summarize(max.gdp = max(gdpPercap), min.gdp = min(gdpPercap))
+
+gapminder%>%
+  ggplot(aes(continent, gdpPercap, color = continent))+
+  geom_jitter(aes(alpha = 0.4))+
+  geom_violin()+
+  geom_hline(yintercept = summ$max.gdp, alpha = 0.2)
+
+```
+
+
+### (2) Look at the spread of GDP per capita within the continents
+
+```{r spreadgdpp}
+spreadgdp  <- gpmd %>%
+  group_by(continent) %>%
+  summarize(
+  Min = min(gdpPercap),
+  Max = max(gdpPercap),
+  Mean = mean(gdpPercap),
+  SD = sd(gdpPercap),
+  Median = median(gdpPercap),
+  Q1st = quantile(gdpPercap, 1/4),
+  Q3rd = quantile(gdpPercap, 3/4),
+  IQR = IQR(gdpPercap),
+  Var = var(gdpPercap),
+  PopVar = var(gdpPercap) * ((n_distinct(gapminder$country) -
+  1) / n_distinct(gapminder$country)),
+  )
+
+kable(spreadgdp)
+
+```
+
+#### Boxplot of GDP per capita by continents
+
+```{r}
+p3 <- gapminder %>%
+  ggplot(aes(continent, gdpPercap, fill = continent)) +
+  geom_boxplot(outlier.colour = "black") +
+  scale_y_log10() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r message=FALSE}
+p4 <- gapminder %>%
+  ggplot(aes(gdpPercap, fill = continent)) +
+  facet_wrap(~continent,scale = "free_y") +
+  geom_histogram() + 
+  scale_x_log10() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+grid.arrange(p3, p4, ncol = 2,
+  top = "Spread of GDP per capita within the continents",
+  widths = c(0.5, 0.5),
+  clip = FALSE
+)
+
+
+```
+The box plot and the distribuition plots shows that Asia indeed have the widest range between Min and Max GDP per capita due alo to its outlies which are have been higher even more than Oceania and Europe and almost as low as the African continents contribuiting to a widest spread which is displayed by its Standard deviation value ``r spreadgdp$SD[3]``, sample variance ``r spreadgdp$Var[3]`` and population variance ``r spreadgdp$PopVar[3]``.
+
+
+### (3) Compute a trimmed/weighted mean of life expectancy for different years. 
+
+Based on the definition of Trimmed mean, for most statistical applications, $5-25\%$ of the ends are discarded. The $25\%$ trimmed mean is known as the interquartile mean. Therefore, here I choose to present the interquartile mean of the life expectancy for different years.
+
+```{r trimmean}
+
+# summarize weighted mean and trimed mean of lifeExp
+
+lEMeans <- gpmd %>%
+arrange(year) %>%  # arrange by year
+group_by(year) %>%    # group by year
+summarize(
+meanLifeExp = mean(lifeExp),
+trimedMeanLifeExp = mean(lifeExp, trim = 1 / 4),
+weightedMeanLifeExp = weighted.mean(lifeExp, pop)
+) 
+
+kable(lEMeans)
+```
+
+
+```{r trimmeanplot}
+
+p1<-lEMeans %>% 
+  ggplot(aes(x=year, y=trimedMeanLifeExp, weightedMeanLifeExp)) +
+  geom_point(color = "green") +
+  geom_line(color = "green") +
+  geom_point(aes(year,meanLifeExp)) + 
+  geom_line(aes(year,meanLifeExp)) +
+  ggtitle("Trimmed mean life expectancy 1952 - 2007") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+p2<-lEMeans %>% 
+  ggplot(aes(x=year, y=weightedMeanLifeExp)) + 
+  geom_point(color = "green") +
+  geom_line(color = "green") +
+  geom_point(aes(year,meanLifeExp)) + 
+  geom_line(aes(year,meanLifeExp)) +
+  ggtitle("Weighted mean life expectancy 1952 - 2007") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+grid.arrange(p1, p2, ncol = 1)
+
+
+```
+
+We could see the weighted mean (green) life expectancy dropped in 1962, this would have been there should have been a significant increase in world population for the mean to drop significantly. To explain what happened in 1962 we could refer to [this][1962worldpop] article which explains that before 1800 the world population growth rate was well below 1%. The higest recorded population annual growth was recorded in 1962, and ever since it has gone down, we currently sit at around 1% annual population growth rate as of 2018. 
+
+The problem here, I would definately think that the weighted mean is more usefull as a general evaluation than the trimmed mean for me, as the question of "how much trim required" is a justification that I am not in an adequate position to make as I do have the background knowledge of population statstic or historical background that could shed some light on a reasonable gate setting for these trims.  
+
+##### Lets look at the range of life expectancies in these continents
+
+```{r}
+gpmd %>%
+  group_by(continent) %>% 
+  summarize(range = max(lifeExp) - min(lifeExp)) %>% 
+  kable()
+```
+
+
+
+[1962worldpop]: https://ourworldindata.org/world-population-growth
+
+As can be seen there is 40 years difference between the life Expectancies in Oceania and Africa and setting a 25% trim of the outliers for these population can seem ill justified (over-trimming) when proper historical facts or knowledege is not supported, as such It was the hardest part for me in the assignment figuring out what is the most approprite value for a trimmed mean, how far out of the data should be considered outliers..
+
+
+### (4) How is life expectancy changing over time on different continents?
+
+```{r lifeexpectovertimecontinent}
+lExOverT = gpmd %>%
+  group_by(continent, year) %>%
+  summarise(weightedMeanLifeExp = weighted.mean(lifeExp, pop))
+
+kable(lExOverT)
+  
+```
+To depict how the mean life expectancy change over time, I plot the point along with a linear regression function to capture the trend. 
+
+```{r lifeexpectovertimecontinentplot, message=FALSE}
+
+p3 <- lExOverT %>%
+  ggplot(aes(year, weightedMeanLifeExp, color = continent)) +
+  geom_point() + geom_smooth(method = "lm")
+
+print(p3)
+# grid.arrange(p3, p4, nrow = 1)
+
+```
+
+
+```{r fourplotmean, message=FALSE}
+
+# plot the distribution of each continent.
+p4 <- ggplot(gapminder, aes(year, lifeExp)) +
+  facet_wrap( ~ continent) + geom_point(alpha = 0.2) + geom_smooth() +
+  theme(aspect.ratio = 1, axis.text.x = element_text(angle = 90, hjust = 1)) +
+  xlab("mean life expectancy")
+
+
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+
+```
