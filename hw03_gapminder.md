@@ -31,17 +31,27 @@ Functions used
 -   **reshape::melt()** - Changes a rectangular data into the long format.
 -   **knitr::kable()** - Changes a rectangular data into the long format.
 
-Initial Package Setup
----------------------
+### Install, load packages and assign dataset
 
 ``` r
+if (ev_False) {
+  install.packages("tidyverse")
+  install.packages("gapminder") 
+  install.packages("reshape2") 
+  install.packages("knitr")
+} 
+
+if (ev_True) {
 library(tidyverse)
 library(gapminder)
 library(reshape2)
 library(knitr)
-suppressPackageStartupMessages(library(kableExtra))
-suppressPackageStartupMessages(library(gghighlight))
-suppressPackageStartupMessages(library(gridExtra))
+library(kableExtra)
+library(gghighlight)
+library(gridExtra)
+}
+
+# Assigns the dataset to the variable gpmder. It is good practice to explore and not on the raw data itself in case something goes bad it can be easily fixed.
 ```
 
 Exploration Tasks
@@ -208,7 +218,7 @@ continentGdpMinMaxPlot <- maxMinGdp %>% # assign results to "continentGdpMinMaxP
 print(continentGdpMinMaxPlot)
 ```
 
-![](hw03_gapminder_files/figure-markdown_github/continentGdpMinMaxPlot-1.png)
+![](figs/continentGdpMinMaxPlot-1.png)
 
 Asia has the widest range of GDP per capita values, followed by Africa. Oceania has the smallest differences in GDP per capita in all those years. We will try to explain some of the results in the next few sections.
 
@@ -248,26 +258,9 @@ grid.arrange(p1, continentGdpMinMaxPlot, ncol = 2,
 )
 ```
 
-![](hw03_gapminder_files/figure-markdown_github/continentGdpMinMaxPlotwithTable-1.png)
+![](figs/continentGdpMinMaxPlotwithTable-1.png)
 
 It can be seen here that Africa 52 has the highest number of country representation in the dataset followed by Asia 33 and Oceania has 2, the least number of representative. This partially explains why there is the least differences between Oceania and the high differences between Asian and African continent. Althogh Africa has the most representative countries, Asia had the biggest difference between GDP percapita in the dataset because it can be seen that Asia has a steady increase of mean GDP per capita over the years compared to Africa, which has a very slow non-linear growth to the GDP per capita.
-
-To get a intuitive sense of the maximum and minimum gdpPercap for different continents, I utilize the violin plot along with the jitter plot, where I also add a horizontal line to indicate the maximum values.
-
-``` r
-summ = 
-  gapminder%>%
-  group_by(continent) %>%
-  summarize(max.gdp = max(gdpPercap), min.gdp = min(gdpPercap))
-
-gapminder%>%
-  ggplot(aes(continent, gdpPercap, color = continent))+
-  geom_jitter(aes(alpha = 0.4))+
-  geom_violin()+
-  geom_hline(yintercept = summ$max.gdp, alpha = 0.2)
-```
-
-![](hw03_gapminder_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 ### (2) Look at the spread of GDP per capita within the continents
 
@@ -532,7 +525,7 @@ grid.arrange(p3, p4, ncol = 2,
 )
 ```
 
-![](hw03_gapminder_files/figure-markdown_github/unnamed-chunk-4-1.png) The box plot and the distribuition plots shows that Asia indeed have the widest range between Min and Max GDP per capita due alo to its outlies which are have been higher even more than Oceania and Europe and almost as low as the African continents contribuiting to a widest spread which is displayed by its Standard deviation value `1.4045373\times 10^{4}`, sample variance `1.9727251\times 10^{8}` and population variance `1.9588326\times 10^{8}`.
+![](figs/spreadplot-1.png) The box plot and the distribuition plots shows that Asia indeed have the widest range between Min and Max GDP per capita due alo to its outlies which are have been higher even more than Oceania and Europe and almost as low as the African continents contribuiting to a widest spread which is displayed by its Standard deviation value `1.4045373\times 10^{4}`, sample variance `1.9727251\times 10^{8}` and population variance `1.9588326\times 10^{8}`.
 
 ### (3) Compute a trimmed/weighted mean of life expectancy for different years.
 
@@ -765,7 +758,7 @@ p2<-lEMeans %>%
 grid.arrange(p1, p2, ncol = 1)
 ```
 
-![](hw03_gapminder_files/figure-markdown_github/trimmeanplot-1.png)
+![](figs/trimmeanplot-1.png)
 
 We could see the weighted mean (green) life expectancy dropped in 1962, this would have been there should have been a significant increase in world population for the mean to drop significantly. To explain what happened in 1962 we could refer to [this](https://ourworldindata.org/world-population-growth) article which explains that before 1800 the world population growth rate was well below 1%. The higest recorded population annual growth was recorded in 1962, and ever since it has gone down, we currently sit at around 1% annual population growth rate as of 2018.
 
@@ -1533,7 +1526,7 @@ p3 <- lExOverT %>%
 print(p3)
 ```
 
-![](hw03_gapminder_files/figure-markdown_github/lifeexpectovertimecontinentplot-1.png)
+![](figs/lifeexpectovertimecontinentplot-1.png)
 
 ``` r
 # grid.arrange(p3, p4, nrow = 1)
@@ -1550,4 +1543,6 @@ p4 <- ggplot(gapminder, aes(year, lifeExp)) +
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
-![](hw03_gapminder_files/figure-markdown_github/fourplotmean-1.png)
+![](figs/fourplotmean-1.png)
+
+### (5) Report the absolute and/or relative abundance of countries with low life expectancy over time by continent

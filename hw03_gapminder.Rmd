@@ -36,16 +36,37 @@ Functions used
 -   **knitr::kable()** - Changes a rectangular data into the long format.
 
 
+```{r setup, global_options, include=FALSE}
+ # assign TRUE and FALSE value to a variable for chunk evaluation
+ev_True = TRUE
+ev_False = FALSE
 
-## Initial Package Setup
-```{r loadChunk, echo=TRUE, message=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='figs/',
+                      echo=T, warning=T, message=T)
+```
+
+
+### Install, load packages and assign dataset
+
+```{r loadchunk, message=FALSE}
+if (ev_False) {
+  install.packages("tidyverse")
+  install.packages("gapminder") 
+  install.packages("reshape2") 
+  install.packages("knitr")
+} 
+
+if (ev_True) {
 library(tidyverse)
 library(gapminder)
 library(reshape2)
 library(knitr)
-suppressPackageStartupMessages(library(kableExtra))
-suppressPackageStartupMessages(library(gghighlight))
-suppressPackageStartupMessages(library(gridExtra))
+library(kableExtra)
+library(gghighlight)
+library(gridExtra)
+}
+
+# Assigns the dataset to the variable gpmder. It is good practice to explore and not on the raw data itself in case something goes bad it can be easily fixed.
 
 ```
 
@@ -126,21 +147,6 @@ grid.arrange(p1, continentGdpMinMaxPlot, ncol = 2,
 
 It can be seen here that Africa `r countrycount[1]` has the highest number of country representation in the dataset followed by Asia `r countrycount[3]` and Oceania has `r countrycount[5]`, the least number of representative. This partially explains why there is the least differences between Oceania and the high differences between Asian and African continent. Althogh Africa has the most representative countries, Asia had the biggest difference between GDP percapita in the dataset because it can be seen that Asia has a steady increase of mean GDP per capita over the years compared to Africa, which has a very slow non-linear growth to the GDP per capita.
 
-To get a intuitive sense of the maximum and minimum gdpPercap for different continents, I utilize the violin plot along with the jitter plot, where I also add a horizontal line to indicate the maximum values. 
-```{r}
-summ = 
-  gapminder%>%
-  group_by(continent) %>%
-  summarize(max.gdp = max(gdpPercap), min.gdp = min(gdpPercap))
-
-gapminder%>%
-  ggplot(aes(continent, gdpPercap, color = continent))+
-  geom_jitter(aes(alpha = 0.4))+
-  geom_violin()+
-  geom_hline(yintercept = summ$max.gdp, alpha = 0.2)
-
-```
-
 
 ### (2) Look at the spread of GDP per capita within the continents
 
@@ -175,7 +181,7 @@ p3 <- gapminder %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-```{r message=FALSE}
+```{r spreadplot, message=FALSE}
 p4 <- gapminder %>%
   ggplot(aes(gdpPercap, fill = continent)) +
   facet_wrap(~continent,scale = "free_y") +
@@ -298,3 +304,5 @@ p4 <- ggplot(gapminder, aes(year, lifeExp)) +
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 
 ```
+
+### (5) Report the absolute and/or relative abundance of countries with low life expectancy over time by continent
