@@ -10,8 +10,8 @@ These are the links to the privious weeks participation for the STAT545A class a
 
 [Stat545Link]: http://stat545.com/Classroom/ "STAT 545A: Exploratory Data Analysis"
 [STAT545A_participation]: https://github.com/zeeva85/STAT545A_participation
-[hw003.md]: https://github.com/STAT545-UBC-students/hw02-zeeva85/blob/master/hw02_gapminder.md
-[hw003.rmd]: https://github.com/STAT545-UBC-students/hw02-zeeva85/blob/master/hw02_gapminder.Rmd
+[hw003.md]: https://github.com/STAT545-UBC-students/hw03-zeeva85/blob/master/hw03_gapminder.md
+[hw003.rmd]: https://github.com/STAT545-UBC-students/hw03-zeeva85/blob/master/hw03_gapminder.Rmd
 
 
 
