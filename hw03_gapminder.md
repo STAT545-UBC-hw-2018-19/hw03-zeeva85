@@ -56,8 +56,6 @@ if (ev_True) {
   library(reshape2)
   library(knitr)
   library(maps)
-  # library(kableExtra)
-  # library(gghighlight)
   library(gridExtra)
 }
 ```
@@ -223,7 +221,7 @@ Oceania      10039.5956    34435.37   18621.609    6358.983   17983.304   14141.
 p3 <- gapminder %>% # assign plots for gridding function below
   ggplot(aes(continent, gdpPercap, fill = continent)) +
   geom_boxplot(outlier.colour = "black") +
-  scale_y_log10() +
+  scale_y_log10() + # scales the y axis to log 10
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -233,7 +231,7 @@ p4 <- gapminder %>% # assign plots for gridding function below
   ggplot(aes(gdpPercap, fill = continent)) +
   facet_wrap(~continent, scale = "free_y") +
   geom_histogram() +
-  scale_x_log10() +
+  scale_x_log10() + # scales the x axis to log 10
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 grid.arrange(p3, p4, # grids of for p3 and p4
@@ -287,7 +285,7 @@ kable(lEMeans)
  2002      65.69492            68.30965              67.83904
  2007      67.00742            69.68886              68.91909
 
-This table will be used for subsequent explorations later. This table diplays the mean, trimmed meand, and weighted mean over the years from 1952 - 2007
+This table will be used for subsequent explorations later. This table displays the mean, trimmed mean, and weighted mean over the years from 1952 - 2007
 
 
 ```r
@@ -328,7 +326,7 @@ The trimmed mean of life expectancies looks similiar to the normal mean for life
 ```r
 gpmd %>%
   group_by(continent) %>%
-  summarize(range = max(lifeExp) - min(lifeExp)) %>%
+  summarize(range = max(lifeExp) - min(lifeExp)) %>% # summarize range of life expec.
   kable()
 ```
 
@@ -342,7 +340,7 @@ Asia         53.802
 Europe       38.172
 Oceania      12.115
 
-The problem here, I would definately think that the weighted mean is more usefull as a general evaluation than the trimmed mean for me, as the question of "how much trim required" is a justification that I am not in an adequate position to make as I do have the background knowledge of population statstic or world historical background in terms of major events around the world that could shed some light for me to apply a reasonable trim setting value. Only 3 questions were required, however as I am attempting all 5, I have choosen the weigheted mean throught the years as my benchmark for low life expectancies in related to question 5.   
+The problem here, I would definately think that the weighted mean is more usefull as a general evaluation than the trimmed mean for me, as the question of "how much trim required" is a justification that I am not in an adequate position to make as I do have the background knowledge of population statstic or world historical background in terms of major events around the world that could shed some light for me to apply a reasonable trim setting value. Only 3 questions were required, however as I am attempting all 5, I have choosen the weighted mean throught the years as my benchmark for low life expectancies in related to question 5.   
 
 [1962worldpop]: https://ourworldindata.org/world-population-growth
 
@@ -356,7 +354,7 @@ The table indicates that there is 40 years difference between the life expectanc
 ```r
 lExOverT <- gpmd %>%
   group_by(continent, year) %>%
-  summarise(weightedMeanLifeExp = weighted.mean(lifeExp, pop))
+  summarise(weightedMeanLifeExp = weighted.mean(lifeExp, pop)) #computes weighted mean by population
 
 kable(lExOverT)
 ```
@@ -434,8 +432,8 @@ p3 <- lExOverT %>%
   ggplot(aes(year, weightedMeanLifeExp, color = continent)) +
   geom_point() + 
   geom_smooth(method = "lm") +
-  ggtitle("weighted mean life expectancy from 1952 - 2007") +
-  theme(plot.title = element_text(hjust = 0.5))
+  ggtitle("weighted mean life expectancy from 1952 - 2007") + # title plot
+  theme(plot.title = element_text(hjust = 0.5)) # centers title
 
 print(p3)
 ```
@@ -451,12 +449,13 @@ look below for explanation on this plot
 ```r
 # plot the distribution of each continent.
 p4 <- gpmd %>% ggplot(aes(year, lifeExp)) +
-  facet_wrap(~continent) + geom_point(alpha = 0.2) + geom_smooth() +
+  facet_wrap(~continent) + geom_point(alpha = 0.2) + 
+  geom_smooth() +
   theme(aspect.ratio = 1, axis.text.x = element_text(angle = 90, hjust = 1)) +
   xlab("mean life expectancy")
 
 
-grid.arrange(p1, p2, p3, p4, ncol = 2)
+grid.arrange(p1, p2, p3, p4, ncol = 2) # grid plot 1,2,3,4 in 2*2 format
 ```
 
 ![](figs/fourplotmean-1.png)<!-- -->
@@ -614,7 +613,7 @@ gpmd %>%
 
 ![](figs/interestingstoriesplot-1.png)<!-- -->
 
-Although this plot looks weird, it is quite informative and there are trend lined for all the 142 countried and their life expectancies from 1952, 2007. It is easily discernible that there are two trend lines which dips at 1977 and 1992. 
+Although this plot looks weird, it is quite informative and there are trend lined for all the 142 countries and their life expectancies from 1952, 2007. It is easily discernible that there are two trend lines which dips at 1977 and 1992. 
 
 We can sort of use the filter to find out which country is that and what happen there historically that affected its life expectancies.
 
