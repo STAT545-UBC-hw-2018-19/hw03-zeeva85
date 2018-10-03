@@ -219,7 +219,7 @@ The box plot and the distribuition plots shows that Asia indeed have the widest 
 
 ### (3) Compute a trimmed/weighted mean of life expectancy for different years. 
 
-Definition of trimmed mean, for most statistical evaluation of mean is normally $5-25\%$, where the ends are discarded. The $25\%$ trimmed mean is the interquartile mean. The interquartile mean is used to get the life expectancy for different years.
+Definition of trimmed mean, for most statistical evaluation of mean is normally 5-25\%, where the ends are discarded. The 25\% trimmed mean is the interquartile mean. The interquartile mean is used to get the life expectancy for different years.
 
 ```{r trimmean}
 
